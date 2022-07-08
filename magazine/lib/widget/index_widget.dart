@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:magazine/common/global.dart';
 import 'package:magazine/models/recommend_model.dart';
+import 'package:magazine/pages/category_page.dart';
 import 'package:magazine/widget/common_widget.dart';
 
 class IndexCategoryWidget extends StatelessWidget {
@@ -11,7 +15,28 @@ class IndexCategoryWidget extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Row(
-        children: _items,
+        children: _categorys.map((e) {
+          return Expanded(
+            child: TapWrap(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: MAIN_COLOR,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                margin: EdgeInsets.all(15),
+                child: Column(
+                  children: [Icon(Icons.category), Text(e)],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+              ),
+              tapAct: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CategoryPage(),
+                ));
+              },
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -51,11 +76,29 @@ class _IndexSectionWidgeState extends State<IndexSectionWidge> {
       margin: EdgeInsets.all(10),
       child: Column(
         children: [
-          Row(
-            children: [Text(widget.title), Icon(Icons.arrow_right)],
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: Row(
+                children: [
+                  Text(
+                    widget.title,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                  Icon(Icons.arrow_right)
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              )),
+          Container(
+            constraints: BoxConstraints(minWidth: double.infinity),
+            // color: Colors.red,
+            child: Wrap(
+              spacing: 10,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              runSpacing: 5,
+              children: _items,
+              alignment: WrapAlignment.start,
+            ),
           ),
-          Wrap(spacing: 10, runSpacing: 5, children: []),
           TapWrap(
               child: Container(
                 alignment: Alignment.center,
@@ -69,19 +112,20 @@ class _IndexSectionWidgeState extends State<IndexSectionWidge> {
     );
   }
 
-  // List<Widget> get _items {
-  //   return widget.model.data!.map((e) {
-  //     return Container(
-  //       width: 100,
-  //       // height: 100,
-  //       alignment: Alignment.center,
-  //       child: Column(children: [
-  //         CachedNetworkImage(
-  //             imageUrl:
-  //                 'https://img.resource.qikan.cn/markdps/qkimages/hwwz/hwwz202206-m.jpg'),
-  //         Text(e.name ?? '')
-  //       ]),
-  //     );
-  //   }).toList();
-  // }
+  List<Widget> get _items {
+    return List.generate(8, (index) {
+      return Container(
+        width: window.physicalSize.width / window.devicePixelRatio / 3 - 50,
+        // width: 100,
+        // height: 100,
+        alignment: Alignment.center,
+        child: Column(children: [
+          CachedNetworkImage(
+              imageUrl:
+                  'https://img.resource.qikan.cn/markdps/qkimages/hwwz/hwwz202206-m.jpg'),
+          Text('${index}')
+        ]),
+      );
+    }).toList();
+  }
 }
